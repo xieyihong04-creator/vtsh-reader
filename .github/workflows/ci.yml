@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+
+      # 本地与 CI 都没有 keystore.properties，release 会产出「未签名」APK；
+      # 源码构建可复现，签名只在本地/私有助手里做。
+      - name: Assemble debug
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Assemble release (unsigned)
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Upload APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: apks
+          path: app/build/outputs/apk/**/*.apk
+          if-no-files-found: error

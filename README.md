@@ -69,4 +69,4 @@ app/src/main/kotlin/tw/vtsh/reader/
 
 ## License
 
-本仓库内容按原样提供，仅供学习。卫道中学与其 logo / 名称的版权属于校方；对本 App 的使用不承担任何官方责任。
+MIT（见 [LICENSE](LICENSE)）。本仓库内容按原样提供，仅供学习。卫道中学与其 logo / 名称的版权属于校方；对本 App 的使用不承担任何官方责任。
